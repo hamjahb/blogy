@@ -56,12 +56,37 @@ router.post('/api/articles', (req, res) => {
     })
 })
 
+
 /* 
 Action:      UPDATE
 Method:      PATCH
 URI:        /api/articles/x132dcf4vgb5h7n6j
 Description: update a spacific article
 */
+router.patch('/api/articles/:id', (req, res) => {
+    Article.findById(req.params.id)
+    .then((article) => {
+        if (article) {
+             // pass the result of mongose  .update method to next.then statment
+            return article.update(req.body.article);
+        } else {
+            res.status.apply(404).json({
+                error: {
+                    name: "DocumentNotFound Error",
+                    message: "The Provided ID does not match any documents"
+                }
+            })
+        }
+    })
+    .then(() => {
+        // if delete succeded, return 204 and no JSON
+        res.status(204).end();
+    })
+    // catch any errors that may occur
+    .catch((error) => {
+        res.status(500).json({error: error})
+    })
+})
 
 
 /* 
