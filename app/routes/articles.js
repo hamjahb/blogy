@@ -43,7 +43,18 @@ Method:      POST
 URI:        /api/articles
 Description: create a new article
 */
-
+router.post('/api/articles', (req, res) => {
+    Article.create(req.body.article)
+/*  on a succesful create action respond with 201
+    http status and content of new article */
+    .then((newArticle) => {
+        res.status(201).json({article: newArticle})
+    })
+/*  catch any error that may occur */
+    .catch((error) => {
+        res.status(500).json({error: error})
+    })
+})
 
 /* 
 Action:      UPDATE

@@ -26,6 +26,16 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 
+/* middle ware */
+
+/* add 'bodyParser' which will parse JSON requests into
+JS objects before they reach the route files.
+
+the method '.use' sets up middleware for the express application
+*/
+app.use(express.json());
+
+
 /* Routes */
 // mount imported routers
 app.use(indexRouter);
