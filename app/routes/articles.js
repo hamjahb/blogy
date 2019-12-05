@@ -6,7 +6,8 @@ const mongoose = require('mongoose');
 const router = express.Router();
 
 // require Mongoose model for Article
-const Article = require('../models/article')
+const Article = require('../models/article').Article;
+const Comment = require('../models/article').Comment;
 
 
 /* 
@@ -134,6 +135,64 @@ router.delete('/api/articles/:id', (req, res) => {
         res.status(500).json({error: error})
     })
 })
+
+
+/************** Comments CRUD **************/
+/* 
+Action:      INDEX
+Method:      GET
+URI:        /api/articles/:articleId/comments
+Description: Get all comments of a spacific article
+*/
+router.get('api/articles/:articleId/comments', (req, res) => {
+    Article.findById(req.params.userId, (error, foundArticle) => {
+        res.send(foundArticle.comments)
+    })
+})
+
+
+/* 
+Action:      SHOW
+Method:      GET
+URI:        /api/articles/:articleId/comment/:commentId
+Description: Get a spacific comment from a certain article
+*/
+
+
+/* 
+Action:      CREATE
+Method:      POST
+URI:        /api/articles/:articleId/comments
+Description: create a new comment for a spacific article
+*/
+router.post('/api/articles/:articleId/comments', (req, res) => {
+    // creates the new comment
+    const newComment = new Comment({
+        commentText: req.body.commentText
+    });
+
+    // find the article by article Id and add new comment
+    Article.findById(req.params.articleId, (error, foundArticle) => {
+        foundArticle.comments.push(newComment);
+        foundArticle.save((err, savedArticle) => {
+            res.json(savedArticle)
+        })
+    })
+})
+
+/* 
+Action:      UPDATE
+Method:      PATCH
+URI:        /api/articles/:articleId/comment/:commentId
+Description: update a spacific comment for a spacific article
+*/
+
+/* 
+Action:      DESTROY
+Method:      DELETE
+URI:        /api/articles/:articleId/comment/:commentId
+Description: delete a spacific comment for a spacific article with article ID
+*/
 
 // export the router so we can use it in server.js file
 module.exports = router;
