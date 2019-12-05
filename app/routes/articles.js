@@ -157,6 +157,17 @@ Method:      GET
 URI:        /api/articles/:articleId/comment/:commentId
 Description: Get a spacific comment from a certain article
 */
+router.get('/api/articles/:articleId/comments/:commentId', (req, res) => {
+    // const articleId = req.params.articleId;
+    const commentId = req.params.commentId;
+
+    // find articleby ID
+    Article.findById(req.params.articleId, (error, foundArticle) => {
+        // find tweet in article
+        const foundTweet = foundArticle.comments.id(commentId);
+        res.send(foundTweet)
+    })
+})
 
 
 /* 
@@ -170,6 +181,7 @@ router.post('/api/articles/:articleId/comments', (req, res) => {
     const newComment = new Comment({
         commentText: req.body.commentText
     });
+  
 
     // find the article by article Id and add new comment
     Article.findById(req.params.articleId, (error, foundArticle) => {
@@ -179,6 +191,7 @@ router.post('/api/articles/:articleId/comments', (req, res) => {
         })
     })
 })
+
 
 /* 
 Action:      UPDATE
@@ -193,6 +206,13 @@ Method:      DELETE
 URI:        /api/articles/:articleId/comment/:commentId
 Description: delete a spacific comment for a spacific article with article ID
 */
+// Article.deleteOne('/api/articles/:articleId/comments/:commentId', (req, res) => {
+//    const commentId = req.params.commentId;
+//     // find article with article id
+//     Article.findById(req.params.articleId, (err, article) => {
+//         article.comments.id(commentId)
+//     })
+// })
 
 // export the router so we can use it in server.js file
 module.exports = router;
