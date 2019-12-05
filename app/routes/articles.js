@@ -79,22 +79,22 @@ URI:        /api/articles/x132dcf4vgb5h7n6j
 Description: update a spacific article
 */
 // update tweet embedded in user
-router.patch('/api/articles/:articleId/comments/:commentId', (req, res) => {
+router.put('/api/articles/:articleID/comments/:commentId', (req, res) => {
     // set the value of the user and tweet ids
-    const articleId = req.params.articleId;
+    const userId = req.params.userId;
     const commentId = req.params.commentId;
   
     // find user in db by id
-    Article.findById(articleId, (err, foundArticle) => {
-      // find tweet embedded in user
-      const foundComment = foundArticle.comments.id(commentId);
-      // update tweet text and completed with data from request body
+    Articles.findById(userId, (err, foundArticle) => {
+      // find comment embedded in article
+      const foundComment = foundArticle.comment.id(comment);
+      // update comment text and completed with data from request body
       foundComment.commentText = req.body.commentText;
-      foundArticle.save((err, savedArticle) => {
-        res.json(foundComment);
-      });
+      foundUser.save();
+      res.json(foundComment);
     });
   });
+
 
 /* 
 Action:      DESTROY
@@ -191,6 +191,23 @@ Method:      PATCH
 URI:        /api/articles/:articleId/comment/:commentId
 Description: update a spacific comment for a spacific article
 */
+router.patch('/api/articles/:articleId/comments/:commentId', (req, res) => {
+    // set the value of the user and tweet ids
+    const articleId = req.params.articleId;
+    const commentId = req.params.commentId;
+  
+    // find user in db by id
+    Article.findById(articleId, (err, foundArticle) => {
+      // find tweet embedded in user
+      const foundComment = foundArticle.comments.id(commentId);
+      // update tweet text and completed with data from request body
+      foundComment.commentText = req.body.commentText;
+      foundArticle.save((err, savedArticle) => {
+        res.json(foundComment);
+      });
+    });
+  });
+
 
 /* 
 Action:      DESTROY
