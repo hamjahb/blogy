@@ -70,6 +70,31 @@ Method:      DELETE
 URI:        /api/articles/9plok8m7nijh6ubg5vyft4
 Description: delete a spacific article with article ID
 */
+router.delete('/api/articles/:id', (req, res) => {
+    Article.findById(req.params.id)
+    .then ((article) => {
+        if (article) {
+            // pass the result of mongose  .delete method to next.then statment
+            return article.remove();
+        } else {
+            // if we couldent find a document with the matching ID
+            res.status(404).json({
+                error: {
+                    name: "DocumentNotFound Error",
+                    message: "The Provided ID does not match any documents"
+                }
+            })
+        }
+    })
+    .then(() => {
+        // if delete succeded, return 204 and no JSON
+        res.status(204).end();
+    })
+    // catch any errors that may occur
+    .catch((error) => {
+        res.status(500).json({error: error})
+    })
+})
 
 // export the router so we can use it in server.js file
 module.exports = router;
