@@ -35,6 +35,20 @@ Method:      GET
 URI:        /api/articles/42x3sdc5vfg6fb7h8njki9
 Description: Get an article by article ID
 */
+router.get('/api/articles/:id', (req, res) => {
+    Article.findById(req.params.id, (error, article) => {
+        if(article){
+            res.status(200).json({article: article})
+        } else {
+            res.status(404).json({
+                error: {
+                  name: "DocumentNotFoundError",
+                  message: "the provided id doesn't match any document"
+                }
+            })
+        } 
+    })
+})
 
 
 /* 
