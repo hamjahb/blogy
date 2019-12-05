@@ -206,7 +206,7 @@ router.patch('/api/articles/:articleId/comments/:commentId', (req, res) => {
         res.json(foundComment);
       });
     });
-  });
+});
 
 
 /* 
@@ -216,43 +216,20 @@ URI:        /api/articles/:articleId/comment/:commentId
 Description: delete a spacific comment for a spacific article with article ID
 */
 router.delete('/api/articles/:articleId/comments/:commentId', (req, res) => {
-   const articleId = req.params.articleId;
-   const commentId = req.params.commentId;
-   
+    // set the value of the user and tweet ids
+    const articleId = req.params.articleId;
+    const commentId = req.params.commentId;
+    
+    // find user in db by id
+    Article.findById(articleId, (err, foundArticle) => {
+        foundArticle.comments.id(commentId).remove();
+        foundArticle.save();
+        res.json(foundArticle);
+    });
+    
+});
 
-    Article.findById(articleId)
-    .then ((article) => {
-        if (article) {
-            // pass the result of mongose  .delete method to next.then statment
-            // return article.remove();
-            console.log(article.comments);
-            article.comments.findById(commentId)
-            .then((comment) => {
-                console.log(comment);
-                
-                return comment.remove();
-            })
-            
-        } else {
-            // if we couldent find a document with the matching ID
-            res.status(404).json({
-                error: {
-                    name: "DocumentNotFound Error",
-                    message: "The Provided ID does not match any documents"
-                }
-            })
-        }
-    })
-    .then(() => {
-        // if delete succeded, return 204 and no JSON
-        res.status(204).end();
-    })
-    // catch any errors that may occur
-    .catch((error) => {
-        res.status(500).json({error: error})
-    })
-
-})
+    
 
 // export the router so we can use it in server.js file
 module.exports = router;
