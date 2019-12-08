@@ -72,28 +72,37 @@ router.post('/api/articles', (req, res) => {
 })
 
 
-/* 
-Action:      UPDATE
-Method:      PATCH
-URI:        /api/articles/x132dcf4vgb5h7n6j
-Description: update a spacific article
-*/
-// update tweet embedded in user
-router.put('/api/articles/:articleID/comments/:commentId', (req, res) => {
-    // set the value of the user and tweet ids
-    const userId = req.params.userId;
-    const commentId = req.params.commentId;
-  
-    // find user in db by id
-    Articles.findById(userId, (err, foundArticle) => {
-      // find comment embedded in article
-      const foundComment = foundArticle.comment.id(comment);
-      // update comment text and completed with data from request body
-      foundComment.commentText = req.body.commentText;
-      foundUser.save();
-      res.json(foundComment);
+/**
+ * Action:      UPDATE
+ * Method:      PATCH
+* URI:          /api/articles/5d664b8b68b4f5092aba18e9
+* Description:  Update An Article by Article ID
+ */
+router.patch('/api/articles/:id', function(req, res) {
+    Article.findById(req.params.id)
+    .then(function(article) {
+    if(article) {
+        // Pass the result of Mongoose's `.update` method to the next `.then`
+        return article.update(req.body.article);
+    } else {
+        // If we couldn't find a document with the matching ID
+        res.status(404).json({
+        error: {
+            name: 'DocumentNotFoundError',
+            message: 'The provided ID doesn\'t match any documents'
+        }
+        });
+    }
+    })
+    .then(function() {
+    // If the update succeeded, return 204 and no JSON
+    res.status(204).end();
+    })
+    // Catch any errors that might occur
+    .catch(function(error) {
+    res.status(500).json({ error: error });
     });
-  });
+});
 
 
 /* 
